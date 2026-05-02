@@ -37,6 +37,8 @@ def main():
     steps = 10  # @inspect
     learning_rate = 0.01  # @inspect
 
+    initial_loss = calc_avg_loss(eg, param)  # @inspect initial_loss @stepover
+
     for i in range(1, steps + 1):  # @inspect
         loss = calc_avg_loss(eg, param)  # @inspect loss @stepover
         grad = calc_avg_grad_loss(eg, param)  # @inspect grad @stepover
@@ -49,6 +51,9 @@ def main():
         `loss = {loss}` is coming down, W and b are shifting with every step.
         That is gradient descent working.
         """)
+    text(
+        f"**At the end:** The Loss was reduce from **{initial_loss:.4f}** to **{loss:.4f}**"
+    )
     closing()
 
 
