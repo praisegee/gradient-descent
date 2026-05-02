@@ -19,10 +19,16 @@ def main():
     text("# Gradient Descent Explained: Math and Code, Side by Side")
     intro()
     explain_data()
+
     # exaples
     eg = get_dataset(5)
+
     explain_loaded()
     explain_design()
+    explain_loss()
+    explain_gradient()
+    explain_update()
+
     param = Parameter()  # @inspect
     # param.W = np.array([1, 2, 3, 4, 5, 6, 7, 8])  # @inspect
     param.W = np.random.randn(eg[0].X.shape[0])  # using random weights @inspect
@@ -30,9 +36,7 @@ def main():
     param.b = 1  # @inspect
     steps = 10  # @inspect
     learning_rate = 0.01  # @inspect
-    explain_loss()
-    explain_gradient()
-    explain_update()
+
     for i in range(1, steps + 1):  # @inspect
         loss = calc_avg_loss(eg, param)  # @inspect loss @stepover
         grad = calc_avg_grad_loss(eg, param)  # @inspect grad @stepover
@@ -42,7 +46,7 @@ def main():
         )
         text(f"""
         **Step {i} of {steps}** - watch the variables panel on the right.
-        loss is coming down, W and b are shifting with every step.
+        `loss = {loss}` is coming down, W and b are shifting with every step.
         That is gradient descent working.
         """)
     closing()
