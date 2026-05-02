@@ -29,6 +29,8 @@ def main():
     explain_gradient()
     explain_update()
 
+    text("## Now, the implementation")
+
     param = Parameter()  # @inspect
     # param.W = np.array([1, 2, 3, 4, 5, 6, 7, 8])  # @inspect
     param.W = np.random.randn(eg[0].X.shape[0])  # using random weights @inspect
