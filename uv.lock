@@ -19,11 +19,11 @@ requires-dist = [
 
 [[package]]
 name = "lectrace"
-version = "1.1.10"
+version = "1.1.11"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/eb/1d/54a459c1a816fee6425d3eaefc69659828706a02b8ecf1e333dd96709a19/lectrace-1.1.10.tar.gz", hash = "sha256:28126abff0dd246fb7bc323be9bec7a8d4b4262613b56fefca2d2268272a8711", size = 17489522, upload-time = "2026-05-02T11:47:00.41Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/16/79/f2f7474b78d61df99a8654f4e4059466adbb3cb5d9680c98676c34035ce0/lectrace-1.1.11.tar.gz", hash = "sha256:37a1cd0f24ee40638dc20ae61dd7873e9aea7e25da2605aef0b833950bd228a0", size = 17489506, upload-time = "2026-05-02T14:02:27.558Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/0c/9488a7636d1ccbb01c878b835795b2f33488c0629e081a3fd1b54bae1950/lectrace-1.1.10-py3-none-any.whl", hash = "sha256:609e281dc6d0b55d7da64fec70dbffad3a88a87185533550beb2000cc1f7dffc", size = 1431515, upload-time = "2026-05-02T11:46:58.565Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/86/0585a08eab7edea69741ab0fe35f1fe15e1f3ab3c2e061951bbd109ea841/lectrace-1.1.11-py3-none-any.whl", hash = "sha256:d633909ccc92f3461696bbed058e05fe28efddf48dec7783796d6f979088636b", size = 1431696, upload-time = "2026-05-02T14:02:25.547Z" },
 ]
 
 [[package]]
