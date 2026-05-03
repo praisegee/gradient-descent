@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 import numpy as np
-from lectrace import text
+from lectrace import text, note
 
 from _utils import Datapoint, load_electricity_dataset
 
@@ -33,8 +33,8 @@ def main():
 
     param = Parameter()  # @inspect
     # param.W = np.array([1, 2, 3, 4, 5, 6, 7, 8])  # @inspect
-    param.W = np.random.randn(eg[0].X.shape[0])  # using random weights @inspect
-    # param.W = np.array([1, 1, 1, 1, 1, 1, 1, 1])  # @inspect
+    # param.W = np.random.randn(eg[0].X.shape[0])  # using random weights @inspect
+    param.W = np.array([1, 1, 1, 1, 1, 1, 1, 1])  # @inspect
     param.b = 1  # @inspect
     steps = 10  # @inspect
     learning_rate = 0.01  # @inspect
@@ -56,6 +56,9 @@ def main():
     text(
         f"**At the end:** The Loss was reduce from **{initial_loss:.4f}** to **{loss:.4f}**"
     )
+    text(f"""
+        Now, the updated parameter now is: **{param}**
+    """)
     closing()
 
 
@@ -189,6 +192,9 @@ def explain_loaded():
             y = 1.0   # demand went UP in this period
         )
     """)
+
+    eg = get_dataset(2)
+
     text("""
     X is a numpy array with 8 values, one per feature column.
     y is a single float, the thing our model will try to predict.
@@ -209,11 +215,11 @@ def explain_design():
 
         # without the class
         def calc_loss(X, y, W, b):
-            residual = X @ W + b - y
+            error = X @ W + b - y
 
         # with the class
         def calc_loss(d: Datapoint, p: Parameter):
-            residual = d.X @ p.W + p.b - d.y
+            error = d.X @ p.W + p.b - d.y
     """)
     text("""
     The second one reads almost like the math formula on paper.
@@ -267,7 +273,7 @@ def explain_design():
     we bundle them:
 
         def calc_loss(d: Datapoint, p: Parameter):
-            residual = d.X @ p.W + p.b - d.y
+            error = d.X @ p.W + p.b - d.y
     """)
     text("p.W and p.b. Clean, and it mirrors how you would write it in the math.")
     text("""
@@ -298,8 +304,8 @@ def explain_loss():
     text("""
     This is what calc_loss computes:
 
-        residual = X . W + b - y
-        loss     = residual ** 2
+        error = X . W + b - y
+        loss     = error ** 2
     """)
     text("""
     Averaging over all m samples gives us the cost J. This is the single
@@ -307,6 +313,11 @@ def explain_loss():
 
     $J = \\frac{1}{m} \\sum_{i=1}^{m} L^{(i)}$
     """)
+
+    eg = get_dataset(1)[0]
+    param = Parameter(W=np.random.randn(eg.X.shape[0]), b=1)
+
+    loss = calc_loss(d=eg, p=param)
 
 
 def explain_gradient():
@@ -317,7 +328,7 @@ def explain_gradient():
     We do this by computing how J changes with respect to each parameter.
     """)
     text("""
-    For one sample, let r be the residual: r = X . W + b - y.
+    For one sample, let r be the error: r = X . W + b - y.
     By the chain rule the partial derivatives of L are:
 
     $\\frac{\\partial L}{\\partial W} = 2r \\cdot X$
@@ -338,6 +349,11 @@ def explain_gradient():
     $dW = \\frac{1}{m} \\sum_{i=1}^{m} \\frac{\\partial L^{(i)}}{\\partial W}, \\quad
     db = \\frac{1}{m} \\sum_{i=1}^{m} \\frac{\\partial L^{(i)}}{\\partial b}$
     """)
+
+    eg = get_dataset(1)[0]
+    param = Parameter(W=np.random.randn(eg.X.shape[0]), b=1)
+
+    dW, db = calc_grad_loss(d=eg, p=param)
 
 
 def explain_update():
@@ -484,9 +500,13 @@ def get_dataset(n: int = 5):  # @inspect
     return load_electricity_dataset(_DATASET_PATH, head=n)
 
 
+def predict(d: Datapoint, p: Parameter):
+    return d.X @ p.W + p.b
+
+
 def calc_loss(d: Datapoint, p: Parameter):  # @inspect
-    residual = (d.X @ p.W + p.b) - d.y
-    loss = residual**2
+    error = predict(d=d, p=p) - d.y
+    loss = error**2
     return loss
 
 
@@ -495,11 +515,23 @@ def calc_avg_loss(datapoints: list[Datapoint], param: Parameter) -> np.ndarray:
     return np.mean(avg_losses)
 
 
+def square_derivative(x):
+    # from power rule
+    # having x^2 -> 2x : just basic power rule
+    return 2 * x
+
+
 def calc_grad_loss(d: Datapoint, p: Parameter):  # @inspect
-    r = (d.X @ p.W + p.b) - d.y
-    dr = 2 * r
-    dW = dr * d.X
-    db = dr * 1
+    # prediction
+    y_hat = predict(d=d, p=p)
+    # residual (error)
+    r = y_hat - d.y  # (XW + b) - y
+    loss = r**2  # loss = r^2  @inspect
+    # print(loss)  # @hide
+    d_loss = square_derivative(r)  # dL/dr = 2r
+    # chain rule
+    dW = d_loss * d.X  # dL/dW = 2r * X
+    db = d_loss  # dL/db = 2r * 1
     return dW, db
 
 

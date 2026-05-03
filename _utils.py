@@ -11,7 +11,9 @@ class Datapoint:
     y: float
 
 
-def load_electricity_dataset(path: str | Path, head: int | None = None) -> np.ndarray:
+def load_electricity_dataset(
+    path: str | Path, head: int | None = None
+) -> np.ndarray[Datapoint]:
 
     if isinstance(path, str):
         path = Path(path)
